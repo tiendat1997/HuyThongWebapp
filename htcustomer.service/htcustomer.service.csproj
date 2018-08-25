@@ -30,7 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,13 +47,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implimentation\AuthService.cs" />
+    <Compile Include="Interface\IAuthService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\CustomSerializeModel.cs" />
+    <Compile Include="ViewModel\LoginView.cs" />
+    <Compile Include="ViewModel\RegistrationView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\htcustomer.entity\htcustomer.entity.csproj">
       <Project>{29907180-2ac8-43c3-89e9-f0e24e9f2cdf}</Project>
       <Name>htcustomer.entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\htcustomer.repository\htcustomer.repository.csproj">
+      <Project>{0dd27ecb-5c33-4425-8968-998e33abc04c}</Project>
+      <Name>htcustomer.repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,7 @@
 ﻿using htcustomer.entity;
+using htcustomer.service.Interface;
+using htcustomer.service.ViewModel;
 using htcustomer.web.Authentication;
-using htcustomer.web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,14 @@ namespace htcustomer.web.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private IAuthService authService;
+        public AccountController(IAuthService _authService)
+        {
+            authService = _authService;
+        }
         // GET: Account  
         public ActionResult Index()
-        {
+        {            
             return View();
         }
 
@@ -43,7 +49,7 @@ namespace htcustomer.web.Controllers
                     var user = (CustomMembershipUser)Membership.GetUser(loginView.UserName, false);
                     if (user != null)
                     {
-                        CustomSerializeModel userModel = new Models.CustomSerializeModel()
+                        CustomSerializeModel userModel = new CustomSerializeModel()
                         {
                             UserId = user.UserId,
                             FirstName = user.FirstName,
@@ -87,70 +93,47 @@ namespace htcustomer.web.Controllers
         {
             bool statusRegistration = false;
             string messageRegistration = string.Empty;
-
-            if (ModelState.IsValid)
+            try
             {
-                // Email Verification  
-                string userName = Membership.GetUserNameByEmail(registrationView.Email);
-                if (!string.IsNullOrEmpty(userName))
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("Warning Email", "Sorry: Email already Exists");
-                    return View(registrationView);
-                }
-
-                //Save User Data   
-                using (HuythongDB dbContext = new HuythongDB())
-                {
-                    var user = new User()
+                    // Email Verification  
+                    string userName = Membership.GetUserNameByEmail(registrationView.Email);
+                    if (!string.IsNullOrEmpty(userName))
                     {
-                        Username = registrationView.Username,
-                        FirstName = registrationView.FirstName,
-                        LastName = registrationView.LastName,
-                        Email = registrationView.Email,
-                        Password = registrationView.Password,
-                        ActivationCode = Guid.NewGuid(),
-                    };
+                        ModelState.AddModelError("Warning Email", "Sorry: Email already Exists");
+                        return View(registrationView);
+                    }
+                    string activeCode = authService.RegisterAccount(registrationView);
 
-                    dbContext.Users.Add(user);
-                    dbContext.SaveChanges();
-                    registrationView.ActivationCode = user.ActivationCode;
+                    //Verification Email  
+                    VerificationEmail(registrationView.Email, activeCode);
+                    messageRegistration = "Your account has been created successfully. ^_^";
+                    statusRegistration = true;
                 }
-
-                //Verification Email  
-                VerificationEmail(registrationView.Email, registrationView.ActivationCode.ToString());
-                messageRegistration = "Your account has been created successfully. ^_^";
-                statusRegistration = true;
+                else
+                {
+                    messageRegistration = "Something Wrong!";
+                }
+                ViewBag.Message = messageRegistration;
+                ViewBag.Status = statusRegistration;
             }
-            else
+            catch (Exception ex)
             {
-                messageRegistration = "Something Wrong!";
+                // Log Elmah
             }
-            ViewBag.Message = messageRegistration;
-            ViewBag.Status = statusRegistration;
-
             return View(registrationView);
         }
 
         [HttpGet]
         public ActionResult ActivationAccount(string id)
         {
-            bool statusAccount = false;
-            using (HuythongDB dbContext = new HuythongDB())
+            bool statusAccount = authService.ActivateAccount(id);
+            if (!statusAccount)
             {
-                var userAccount = dbContext.Users.Where(u => u.ActivationCode.ToString().Equals(id)).FirstOrDefault();
-
-                if (userAccount != null)
-                {
-                    userAccount.IsActive = true;
-                    dbContext.SaveChanges();
-                    statusAccount = true;
-                }
-                else
-                {
-                    ViewBag.Message = "Something Wrong !!";
-                }
-
+                ViewBag.Message = "Something Wrong !!";
             }
+
             ViewBag.Status = statusAccount;
             return View();
         }
@@ -196,7 +179,7 @@ namespace htcustomer.web.Controllers
                 IsBodyHtml = true
 
             })
-            smtp.Send(message);
+                smtp.Send(message);
         }
     }
 }

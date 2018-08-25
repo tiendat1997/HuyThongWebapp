@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace htcustomer.web.Models
+namespace htcustomer.service.ViewModel
 {
     public class LoginView
     {
@@ -17,5 +18,4 @@ namespace htcustomer.web.Models
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
     }
-
 }

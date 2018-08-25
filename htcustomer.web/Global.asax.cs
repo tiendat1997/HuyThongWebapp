@@ -1,5 +1,5 @@
-﻿using htcustomer.web.Authentication;
-using htcustomer.web.Models;
+﻿using htcustomer.service.ViewModel;
+using htcustomer.web.Authentication;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
