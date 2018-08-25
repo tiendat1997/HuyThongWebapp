@@ -12,5 +12,9 @@ namespace htcustomer.service.Interface
     {
         string RegisterAccount(RegistrationView register);
         bool ActivateAccount(string id);
+        bool ValidateUser(string username, string password);
+        User GetUser(string username);
+        string GetUserNameByEmail(string email);
+        List<Role> GetRolesForUser(string username);
     }
 }

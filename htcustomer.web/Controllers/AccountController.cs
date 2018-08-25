@@ -65,6 +65,7 @@ namespace htcustomer.web.Controllers
 
                         string enTicket = FormsAuthentication.Encrypt(authTicket);
                         HttpCookie faCookie = new HttpCookie("Cookie1", enTicket);
+                        faCookie.Expires = DateTime.Now.AddMinutes(2);
                         Response.Cookies.Add(faCookie);
                     }
 
@@ -74,7 +75,7 @@ namespace htcustomer.web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("Index","Home");
                     }
                 }
             }

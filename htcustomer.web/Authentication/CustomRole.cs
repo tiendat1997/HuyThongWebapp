@@ -1,14 +1,24 @@
 ﻿using htcustomer.entity;
+using htcustomer.service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.Security;
+using Unity.Attributes;
 
 namespace htcustomer.web.Authentication
 {
     public class CustomRole : RoleProvider
-    {        
+    {
+        private IAuthService authService;
+
+        [InjectionConstructor]
+        public CustomRole(IAuthService _authService)
+        {
+            authService = _authService;
+        }
         public override bool IsUserInRole(string username, string roleName)
         {
             var userRoles = GetRolesForUser(username);
@@ -22,18 +32,12 @@ namespace htcustomer.web.Authentication
             }
 
             var userRoles = new string[] { };
-
-            using (HuythongDB dbContext = new HuythongDB())
+            var roles = authService.GetRolesForUser(username);
+            if (roles.Count > 0)
             {
-                var selectedUser = dbContext.Users.Include("Roles")
-                        .Where(us => string.Compare(us.Username, username, StringComparison.OrdinalIgnoreCase) == 0)
-                        .Select(us => us)            
-                        .FirstOrDefault();
-                if (selectedUser != null)               
-                    userRoles = new[] { selectedUser.Roles.Select(r => r.RoleName).ToString() };                
-
-                return userRoles.ToArray();
+                userRoles = new[] { roles.Select(r => r.RoleName).ToString() };
             }
+            return userRoles;          
         }
         public override string ApplicationName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         #region Override abstract class not use
@@ -76,5 +80,9 @@ namespace htcustomer.web.Authentication
             throw new NotImplementedException();
         }
         #endregion
+        public CustomRole()
+        : this(DependencyResolver.Current.GetService<IAuthService>())
+        { }
+
     }
 }

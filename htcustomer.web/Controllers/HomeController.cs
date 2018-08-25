@@ -8,13 +8,12 @@ using System.Web.Mvc;
 namespace htcustomer.web.Controllers
 {
     [CustomAuthorize(Roles = "User")]
-    public class UserController : Controller
+    public class HomeController : Controller
     {
-
-        // GET: User  
+        // GET: Home
         public ActionResult Index()
         {
-            return View();
+            return View("Home");
         }
     }
 }

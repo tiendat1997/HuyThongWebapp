@@ -19,6 +19,37 @@ namespace htcustomer.service.Implimentation
             unitOfWork = _unitOfWork;
             userRepo = _userRepo;
         }
+        public List<Role> GetRolesForUser(string username)
+        {
+            var roles = userRepo.Gets()
+                      .Where(us => string.Compare(us.Username, username, StringComparison.OrdinalIgnoreCase) == 0)
+                      .SelectMany(us => us.Roles).ToList();
+            return roles;      
+        }
+        public string GetUserNameByEmail(string email)
+        {
+            string username = userRepo.Gets()
+                   .Where(u => string.Compare(email, u.Email) == 0)
+                   .Select(us => us.Username).FirstOrDefault();
+            return username;
+        }
+        public User GetUser(string username)
+        {
+            var user = userRepo.Gets()
+                  .Where(us => string.Compare(username, us.Username, StringComparison.OrdinalIgnoreCase) == 0)
+                  .Select(us => us).FirstOrDefault();
+            return user;
+        }
+        public bool ValidateUser(string username, string password)
+        {
+            var user = userRepo.Gets()
+                   .Where(us => string.Compare(username, us.Username, StringComparison.OrdinalIgnoreCase) == 0 &&
+                               string.Compare(password, us.Password, StringComparison.OrdinalIgnoreCase) == 0 &&
+                               us.IsActive)
+                   .Select(us => us).FirstOrDefault();
+
+            return (user != null) ? true : false;
+        }
 
         public bool ActivateAccount(string id)
         {
@@ -49,5 +80,6 @@ namespace htcustomer.service.Implimentation
 
             return user.ActivationCode.ToString();
         }
+        
     }
 }
