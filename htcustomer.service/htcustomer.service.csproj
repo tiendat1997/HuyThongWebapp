@@ -48,11 +48,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implimentation\AuthService.cs" />
+    <Compile Include="Implimentation\CategoryService.cs" />
+    <Compile Include="Implimentation\ContactService.cs" />
+    <Compile Include="Implimentation\TransactionService.cs" />
     <Compile Include="Interface\IAuthService.cs" />
+    <Compile Include="Interface\ICategoryService.cs" />
+    <Compile Include="Interface\IContactService.cs" />
+    <Compile Include="Interface\ITransactionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\AddressBookViewModel.cs" />
+    <Compile Include="ViewModel\CategoryViewModel.cs" />
+    <Compile Include="ViewModel\ContactDetailsViewModel.cs" />
+    <Compile Include="ViewModel\CustomerViewModel.cs" />
     <Compile Include="ViewModel\CustomSerializeModel.cs" />
     <Compile Include="ViewModel\LoginView.cs" />
+    <Compile Include="ViewModel\PriceDetailViewModel.cs" />
+    <Compile Include="ViewModel\PriceTransactionViewModel.cs" />
     <Compile Include="ViewModel\RegistrationView.cs" />
+    <Compile Include="ViewModel\TransactionCreateViewModel.cs" />
+    <Compile Include="ViewModel\TransactionHomeViewModel.cs" />
+    <Compile Include="ViewModel\TransactionListHomeViewModel.cs" />
+    <Compile Include="ViewModel\TransactionListViewModel.cs" />
+    <Compile Include="ViewModel\TransactionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\htcustomer.entity\htcustomer.entity.csproj">
