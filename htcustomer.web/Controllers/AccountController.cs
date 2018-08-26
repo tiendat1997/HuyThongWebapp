@@ -81,7 +81,7 @@ namespace htcustomer.web.Controllers
                         }
                     }
                 }
-                ModelState.AddModelError("", "Something Wrong : Username or Password invalid ^_^ ");
+                ModelState.AddModelError("", "Username or Password invalid");
             }
             catch (Exception ex)
             {
