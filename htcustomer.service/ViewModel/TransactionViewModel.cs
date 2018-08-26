@@ -1,4 +1,4 @@
-﻿using htcustomer.service.Enums;
+﻿using htcustomer.entity.Enums;
 using htcustomer.service.ViewModel.Category;
 using System;
 using System.Collections.Generic;

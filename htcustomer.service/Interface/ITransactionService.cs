@@ -1,13 +1,8 @@
-﻿using htcustomer.service.Enums;
-using htcustomer.service.ViewModel;
+﻿using htcustomer.entity.Enums;
 using htcustomer.service.ViewModel.Contact;
 using htcustomer.service.ViewModel.Device;
 using htcustomer.service.ViewModel.Transaction;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace htcustomer.service.Interfaces
 {

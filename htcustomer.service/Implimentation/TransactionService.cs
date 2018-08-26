@@ -1,4 +1,5 @@
 ﻿using htcustomer.entity;
+using htcustomer.entity.Enums;
 using htcustomer.repository;
 using htcustomer.service.Interfaces;
 using htcustomer.service.ViewModel;
@@ -46,7 +47,7 @@ namespace htcustomer.service.Implements
                     Description = transaction.Description,
                     Error = transaction.Error,
                     RecievedDate = DateTime.Now,
-                    StatusID = (int)Enums.TransactionStatus.NotFix,
+                    StatusID = (int)entity.Enums.TransactionStatus.NotFix,
                     TypeID = transaction.Category.CategoryID
                 });
                 unitOfWork.SaveChanges();
@@ -62,7 +63,7 @@ namespace htcustomer.service.Implements
                 var transaction = transactionRepository.GetByID(transactionID);
                 if (transaction != null)
                 {
-                    transaction.StatusID = (int)Enums.TransactionStatus.CannotFix;
+                    transaction.StatusID = (int)entity.Enums.TransactionStatus.CannotFix;
                     transaction.Reason = reason;
                     transactionRepository.Edit(transaction);
                     unitOfWork.SaveChanges();
@@ -86,7 +87,7 @@ namespace htcustomer.service.Implements
                 unitOfWork.SaveChanges();
                 return new TransactionViewModel() {
                     TransactionID = transaction.TransactionID,
-                    Status = (Enums.TransactionStatus)transaction.StatusID,
+                    Status = (entity.Enums.TransactionStatus)transaction.StatusID,
                     Category = new CategoryViewModel()
                     {
                         CategoryID = transaction.Category.CategoryID,
@@ -127,7 +128,7 @@ namespace htcustomer.service.Implements
                             transaction.Price = priceDetails.Sum(x => x.Price);
                         }
                     }
-                    transaction.StatusID = (int)Enums.TransactionStatus.Fixed;
+                    transaction.StatusID = (int)entity.Enums.TransactionStatus.Fixed;
                     transactionRepository.Edit(transaction);
                     unitOfWork.SaveChanges();
                     return true;
@@ -159,7 +160,7 @@ namespace htcustomer.service.Implements
                             .Select(t => new TransactionViewModel
                             {
                                 TransactionID = t.TransactionID,
-                                Status = (Enums.TransactionStatus)t.StatusID,
+                                Status = (entity.Enums.TransactionStatus)t.StatusID,
                                 RecievedDate = t.RecievedDate,
                                 DeliveredDate = t.DeliverDate,
                                 Category = categoryRepository.Gets().Where(c => c.CategoryID == t.TypeID).Select(c => new CategoryViewModel()
@@ -184,12 +185,12 @@ namespace htcustomer.service.Implements
         }
         
 
-        public TransactionListViewModel GetListTransaction(Enums.TransactionStatus? status = null, int? month = null, int? year = null, int? categoryId = null)
+        public TransactionListViewModel GetListTransaction(entity.Enums.TransactionStatus? status = null, int? month = null, int? year = null, int? categoryId = null)
         {
             var transactions = transactionRepository.Gets();
             if (status != null)
             {
-                if (status != Enums.TransactionStatus.Delivered)
+                if (status != entity.Enums.TransactionStatus.Delivered)
                 {
                     transactions = transactions.Where(t => t.StatusID == (int)status && t.Delivered == false);
                 }
@@ -224,7 +225,7 @@ namespace htcustomer.service.Implements
                     Reason = t.Reason,
                     Delivered = t.Delivered,
                     RecievedDate = t.RecievedDate,
-                    Status = (Enums.TransactionStatus)t.StatusID,
+                    Status = (entity.Enums.TransactionStatus)t.StatusID,
                     Category = new CategoryViewModel
                     {
                         CategoryID = t.Category.CategoryID,
@@ -272,7 +273,7 @@ namespace htcustomer.service.Implements
                                                         DeviceDescription = t.Description != null ? t.Description : "No description for this device",
                                                         Price = t.Price != null ? t.Price.Value : 0,
                                                         Error = t.Error != null ? t.Error : "",
-                                                        Status = (Enums.TransactionStatus)t.StatusID.Value,
+                                                        Status = (entity.Enums.TransactionStatus)t.StatusID.Value,
                                                         CannotFixNote = t.Reason != null ? t.Reason : "No reason for this transaction",
                                                         ListPriceDetail = t.DetailPrices.Select(p => new PriceDetailViewModel()
                                                         {
@@ -284,9 +285,9 @@ namespace htcustomer.service.Implements
 
             return new TransactionListHomeViewModel()
             {
-                CannotFixTransactions = transactions.Where(t => t.Status == Enums.TransactionStatus.CannotFix).ToList(),
-                FixedTransactions = transactions.Where(t => t.Status == Enums.TransactionStatus.Fixed).ToList(),
-                NotFixTransactions = transactions.Where(t => t.Status == Enums.TransactionStatus.NotFix).ToList()
+                CannotFixTransactions = transactions.Where(t => t.Status == entity.Enums.TransactionStatus.CannotFix).ToList(),
+                FixedTransactions = transactions.Where(t => t.Status == entity.Enums.TransactionStatus.Fixed).ToList(),
+                NotFixTransactions = transactions.Where(t => t.Status == entity.Enums.TransactionStatus.NotFix).ToList()
             };
         }
         public TransactionHomeViewModel GetTransactionToReload(int transactionId)
@@ -310,7 +311,7 @@ namespace htcustomer.service.Implements
                                     },
                                     Error = t.Error,
                                     Price = t.Price ?? 0,
-                                    Status = (Enums.TransactionStatus)t.StatusID,
+                                    Status = (entity.Enums.TransactionStatus)t.StatusID,
                                     DeviceDescription = t.Description,
                                     CannotFixNote = t.Reason,
                                     ListPriceDetail = t.DetailPrices.Select(p => new PriceDetailViewModel()

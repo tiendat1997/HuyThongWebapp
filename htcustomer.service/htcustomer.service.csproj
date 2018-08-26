@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\JsonMessage.cs" />
     <Compile Include="Implimentation\AuthService.cs" />
     <Compile Include="Implimentation\CategoryService.cs" />
     <Compile Include="Implimentation\ContactService.cs" />

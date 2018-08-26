@@ -52,6 +52,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DetailPrice.cs" />
+    <Compile Include="Enum\JsonResultStatus.cs" />
     <Compile Include="Enum\TransactionStatus.cs" />
     <Compile Include="HtContext.cs" />
     <Compile Include="Product.cs" />
