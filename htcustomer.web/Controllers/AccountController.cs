@@ -24,7 +24,7 @@ namespace htcustomer.web.Controllers
         }
         // GET: Account  
         public ActionResult Index()
-        {            
+        {
             return View();
         }
 
@@ -42,44 +42,51 @@ namespace htcustomer.web.Controllers
         [HttpPost]
         public ActionResult Login(LoginView loginView, string ReturnUrl = "")
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (Membership.ValidateUser(loginView.UserName, loginView.Password))
+                if (ModelState.IsValid)
                 {
-                    var user = (CustomMembershipUser)Membership.GetUser(loginView.UserName, false);
-                    if (user != null)
+                    if (Membership.ValidateUser(loginView.UserName, loginView.Password))
                     {
-                        CustomSerializeModel userModel = new CustomSerializeModel()
+                        var user = (CustomMembershipUser)Membership.GetUser(loginView.UserName, false);
+                        if (user != null)
                         {
-                            UserId = user.UserId,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName,
-                            RoleName = user.Roles.Select(r => r.RoleName).ToList()
-                        };
+                            CustomSerializeModel userModel = new CustomSerializeModel()
+                            {
+                                UserId = user.UserId,
+                                FirstName = user.FirstName,
+                                LastName = user.LastName,
+                                RoleName = user.Roles.Select(r => r.RoleName).ToList()
+                            };
 
-                        string userData = JsonConvert.SerializeObject(userModel);
-                        FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket
-                            (
-                            1, loginView.UserName, DateTime.Now, DateTime.Now.AddMinutes(15), false, userData
-                            );
+                            string userData = JsonConvert.SerializeObject(userModel);
+                            FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket
+                                (
+                                1, loginView.UserName, DateTime.Now, DateTime.Now.AddMinutes(15), false, userData
+                                );
 
-                        string enTicket = FormsAuthentication.Encrypt(authTicket);
-                        HttpCookie faCookie = new HttpCookie("Cookie1", enTicket);
-                        faCookie.Expires = DateTime.Now.AddMinutes(2);
-                        Response.Cookies.Add(faCookie);
-                    }
+                            string enTicket = FormsAuthentication.Encrypt(authTicket);
+                            HttpCookie faCookie = new HttpCookie("Cookie1", enTicket);
+                            faCookie.Expires = DateTime.Now.AddMinutes(2);
+                            Response.Cookies.Add(faCookie);
+                        }
 
-                    if (Url.IsLocalUrl(ReturnUrl))
-                    {
-                        return Redirect(ReturnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index","Home");
+                        if (Url.IsLocalUrl(ReturnUrl))
+                        {
+                            return Redirect(ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
+                ModelState.AddModelError("", "Something Wrong : Username or Password invalid ^_^ ");
             }
-            ModelState.AddModelError("", "Something Wrong : Username or Password invalid ^_^ ");
+            catch (Exception ex)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+            }
             return View(loginView);
         }
 
