@@ -13,11 +13,13 @@ namespace htcustomer.service.Implimentation
     public class AuthService : IAuthService
     {
         private IUnitOfWork unitOfWork;
-        private IRepository<User> userRepo; 
-        public AuthService(IUnitOfWork _unitOfWork, IRepository<User> _userRepo)
+        private IRepository<User> userRepo;
+        private IRepository<Role> roleRepo;
+        public AuthService(IUnitOfWork _unitOfWork, IRepository<User> _userRepo, IRepository<Role> _roleRepo)
         {
             unitOfWork = _unitOfWork;
             userRepo = _userRepo;
+            roleRepo = _roleRepo;
         }
         public List<Role> GetRolesForUser(string username)
         {
@@ -65,12 +67,14 @@ namespace htcustomer.service.Implimentation
 
         public string RegisterAccount(RegistrationView register)
         {
+            var roles = roleRepo.Gets().Where(r => r.RoleId == 1).Select(r => r).ToList();
             var user = new User
             {
                 Username = register.Username,
                 FirstName = register.FirstName,
                 LastName = register.LastName,
                 Email = register.Email,
+                Roles = roles,
                 Password = register.Password,
                 ActivationCode = Guid.NewGuid(),
             };
