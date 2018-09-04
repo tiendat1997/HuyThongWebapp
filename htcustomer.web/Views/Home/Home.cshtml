@@ -3,6 +3,12 @@
     ViewBag.Title = "Home";
 }
 
-<h2>Hello there</h2>
+<div id="app">
+</div>
+ 
+@section scripts {
+    @Scripts.Render("~/Scripts/bundle/home.js")        
+}
+
 
 

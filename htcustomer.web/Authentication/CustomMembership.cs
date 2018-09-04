@@ -1,45 +1,58 @@
 ﻿using htcustomer.entity;
-using htcustomer.service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using System.Web.Security;
 
 namespace htcustomer.web.Authentication
 {
     public class CustomMembership : MembershipProvider
     {
-        private IAuthService authService;
-        public CustomMembership(IAuthService _authService)
-        {
-            authService = _authService;
-        }
         public override bool ValidateUser(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 return false;
             }
-            return authService.ValidateUser(username, password);
 
+            using (HuythongDB dbContext = new HuythongDB())
+            {
+                var user = dbContext.Users
+                    .Where(us => string.Compare(username, us.Username, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                string.Compare(password, us.Password, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                us.IsActive)
+                    .Select(us => us).FirstOrDefault();
+
+                return (user != null) ? true : false;
+            }
         }
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
-            var user = authService.GetUser(username);
-            if (user == null) return null;
-            var selectedUser = new CustomMembershipUser(user);
-            return selectedUser;
+            using (HuythongDB dbContext = new HuythongDB())
+            {
+                var user = dbContext.Users
+                    .Where(us => string.Compare(username, us.Username, StringComparison.OrdinalIgnoreCase) == 0)
+                    .Select(us => us).FirstOrDefault();
+
+                if (user == null) return null;
+
+                var selectedUser = new CustomMembershipUser(user);
+
+                return selectedUser;
+            }
         }
 
         public override string GetUserNameByEmail(string email)
         {
-            string username = authService.GetUserNameByEmail(email);
-            return !string.IsNullOrEmpty(username) ? username : string.Empty;
-        }
-        public CustomMembership(): this(DependencyResolver.Current.GetService<IAuthService>())
-        {
+            using (HuythongDB dbContext = new HuythongDB())
+            {
+                string username = dbContext.Users
+                    .Where(u => string.Compare(email, u.Email) == 0)
+                    .Select(us => us.Username).FirstOrDefault();
+
+                return !string.IsNullOrEmpty(username) ? username : string.Empty;
+            }
         }
 
         #region override methods
