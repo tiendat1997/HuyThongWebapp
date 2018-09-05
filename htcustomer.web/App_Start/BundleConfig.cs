@@ -8,14 +8,11 @@ namespace htcustomer.web.App_Start
         public static void RegisterBundles(BundleCollection bundles)
         {
             StyleBundle baseCss = new StyleBundle("~/bundles/base-css");
-            baseCss.Include("~/node_modules/bootstrap/dist/css/bootstrap.css");
-            baseCss.Include("~/node_modules/bootstrap-vue/dist/bootstrap-vue.css");
-                
+            baseCss.Include("~/node_modules/bootstrap/dist/css/bootstrap.css");                            
             // inclue bootstrap , jquery, ...
             ScriptBundle baseScript = new ScriptBundle("~/bundles/base-script");
             baseScript.Include("~/Scripts/jquery-3.0.0.js");
-            baseScript.Include("~/node_modules/bootstrap/dist/js/bootstrap.bundle.js");
-            baseScript.Include("~/node_modules/bootstrap-vue/dist/bootstrap-vue.js");
+            baseScript.Include("~/node_modules/bootstrap/dist/js/bootstrap.bundle.js");            
 
             ScriptBundle scriptBundle = new ScriptBundle("~/bundles/vue/home");
             //use Include() method to add all the script files with their paths 
