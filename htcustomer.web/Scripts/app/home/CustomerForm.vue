@@ -10,8 +10,7 @@
                 :auto-select-one-item="false"
                 :placeholder="'Gõ ít nhất 3 kí tự để tìm'" 
                 :component-item='template' 
-                @update-items="updateItems"
-                @item-clicked="chooseItem"
+                @update-items="updateItems"                
                 @item-selected="chooseItem">
             </v-autocomplete>            
         </div>        
@@ -89,8 +88,8 @@ export default {
       //     this.items = response;
       //   });
     },
-    chooseItem(item){
-        this.$emit("chooseCustomer", item);
+    chooseItem(item){          
+        this.$emit("updateCustomerInfo", item);
     }
   }
 };

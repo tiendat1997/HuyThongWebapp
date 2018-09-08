@@ -6600,6 +6600,8 @@ var ToolTip = function () {
 //
 //
 //
+//
+//
 
 
 
@@ -6616,7 +6618,8 @@ var ToolTip = function () {
   data: function () {
     return {
       name: "",
-      names: []
+      names: [],
+      customer: null
     };
   },
   methods: {
@@ -6640,6 +6643,7 @@ var ToolTip = function () {
     },
     chooseCustomer(customer) {
       console.log(customer);
+      this.customer = customer;
     }
   }
 });
@@ -6692,67 +6696,69 @@ var ToolTip = function () {
 //
 //
 //
+//
+//
+//
 
 const fields = [{
-    key: "action",
-    label: "Xóa"
+  key: "action",
+  label: "Xóa"
 }, {
-    key: "category",
-    label: "Loại"
+  key: "category",
+  label: "Loại"
 }, {
-    key: "error_desc",
-    label: "Lỗi"
+  key: "error_desc",
+  label: "Lỗi"
 }, {
-    key: "device_desc",
-    label: "Mô tả"
+  key: "device_desc",
+  label: "Mô tả"
 }];
-const customer = {
-    name: "Trần Tiến Đạt",
-    phone: "01643734810"
-};
+
 /* harmony default export */ __webpack_exports__["a"] = ({
-    name: "DeviceForm",
-    components: {},
-    data() {
-        return {
-            customerInfo: customer,
-            items: [],
-            fields: fields,
-            form: {
-                category: null,
-                error_desc: null,
-                device_desc: null
-            },
-            foods: [{
-                text: "Select One",
-                value: null
-            }, "Carrots", "Beans", "Tomatoes", "Corn"],
-            show: true
-        };
+  name: "DeviceForm",
+  components: {},
+  props: {
+    customer: Object
+  },
+  data() {
+    return {
+      items: [],
+      fields: fields,
+      form: {
+        category: null,
+        error_desc: null,
+        device_desc: null
+      },
+      foods: [{
+        text: "Select One",
+        value: null
+      }, "Carrots", "Beans", "Tomatoes", "Corn"],
+      show: true
+    };
+  },
+  methods: {
+    onSubmit(evt) {
+      evt.preventDefault();
+      // alert(JSON.stringify(this.form));
+      this.items.push(this.form);
+      this.form = {};
     },
-    methods: {
-        onSubmit(evt) {
-            evt.preventDefault();
-            // alert(JSON.stringify(this.form));            
-            this.items.push(this.form);
-            this.form = {};
-        },
-        onReset(evt) {
-            evt.preventDefault();
-            /* Reset our form values */
-            this.form.category = null;
-            this.form.error_desc = null;
-            this.form.device_desc = null;
-            // /* Trick to reset/clear native browser form validation state */
-            // this.show = false;
-            // this.$nextTick(() => {
-            //   this.show = true;
-            // });
-        },
-        removeItem(item, index) {
-            this.items.splice(index, 1);
-        }
+    onReset(evt) {
+      evt.preventDefault();
+      /* Reset our form values */
+      this.form.category = null;
+      this.form.error_desc = null;
+      this.form.device_desc = null;
+      // /* Trick to reset/clear native browser form validation state */
+      // this.show = false;
+      // this.$nextTick(() => {
+      //   this.show = true;
+      // });
+    },
+    removeItem(item, index) {
+      this.items.splice(index, 1);
     }
+  }
 });
 
 /***/ }),
@@ -6763,7 +6769,6 @@ const customer = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CustomerView__ = __webpack_require__(92);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_autocomplete__ = __webpack_require__(94);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_v_autocomplete___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_v_autocomplete__);
-//
 //
 //
 //
@@ -6848,7 +6853,7 @@ const customers = [{
       //   });
     },
     chooseItem(item) {
-      this.$emit("chooseCustomer", item);
+      this.$emit("updateCustomerInfo", item);
     }
   }
 });
@@ -21241,7 +21246,7 @@ module.exports = function listToStyles (parentId, list) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__ = __webpack_require__(37);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ef5f2174_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6ad843ef_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(96);
 function injectStyle (ssrContext) {
   __webpack_require__(82)
 }
@@ -21261,7 +21266,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_ef5f2174_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6ad843ef_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -21282,7 +21287,7 @@ var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(16)("0c8e2635", content, true, {});
+var update = __webpack_require__(16)("ad6563f4", content, true, {});
 
 /***/ }),
 /* 83 */
@@ -22789,7 +22794,7 @@ var Datepicker = {render: function(){var _vm=this;var _h=_vm.$createElement;var 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DeviceForm_vue__ = __webpack_require__(38);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d2af395e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9d92cb8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__ = __webpack_require__(88);
 function injectStyle (ssrContext) {
   __webpack_require__(86)
 }
@@ -22809,7 +22814,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DeviceForm_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_d2af395e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9d92cb8e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -22830,7 +22835,7 @@ var content = __webpack_require__(87);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(16)("74913dec", content, true, {});
+var update = __webpack_require__(16)("1048db73", content, true, {});
 
 /***/ }),
 /* 87 */
@@ -22851,7 +22856,7 @@ exports.push([module.i, ".delete-btn:hover{color:red}", ""]);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"col-md-4"},[(_vm.show)?_c('b-form',{on:{"submit":_vm.onSubmit,"reset":_vm.onReset}},[_c('b-form-group',{attrs:{"id":"categoryGroup","label":"Loại thiết bị","label-for":"categoryInput"}},[_c('b-form-select',{attrs:{"id":"categoryInput","options":_vm.foods,"required":""},model:{value:(_vm.form.category),callback:function ($$v) {_vm.$set(_vm.form, "category", $$v)},expression:"form.category"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"errorDescriptionGroup","label":"Mô tả lỗi","label-for":"errorDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"errorDescriptionInput","type":"text","required":"","placeholder":"Enter Error Description"},model:{value:(_vm.form.error_desc),callback:function ($$v) {_vm.$set(_vm.form, "error_desc", $$v)},expression:"form.error_desc"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"deviceDescriptionGroup","label":"Mô tả máy","label-for":"deviceDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"deviceDescriptionInput","type":"text","required":"","placeholder":"Enter Device Description"},model:{value:(_vm.form.device_desc),callback:function ($$v) {_vm.$set(_vm.form, "device_desc", $$v)},expression:"form.device_desc"}})],1),_vm._v(" "),_c('b-button',{attrs:{"type":"submit","variant":"primary"}},[_vm._v("Thêm")]),_vm._v(" "),_c('b-button',{attrs:{"type":"reset","variant":"danger"}},[_vm._v("Reset")])],1):_vm._e()],1),_vm._v(" "),_c('div',{staticClass:"col-md-8"},[_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "+_vm._s(_vm.customerInfo.name)+" \r\n            "),_c('span',[_vm._v("\r\n                /                    \r\n                "+_vm._s(_vm.customerInfo.phone)+"\r\n            ")])]),_vm._v(" "),_c('b-table',{attrs:{"striped":"","hover":"","items":_vm.items,"fields":_vm.fields},scopedSlots:_vm._u([{key:"action",fn:function(row){return [_c('i',{staticClass:"fas fa-trash-alt delete-btn",on:{"click":function($event){_vm.removeItem(row.item,row.index)}}})]}}])})],1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"col-md-4"},[(_vm.show)?_c('b-form',{on:{"submit":_vm.onSubmit,"reset":_vm.onReset}},[_c('b-form-group',{attrs:{"id":"categoryGroup","label":"Loại thiết bị","label-for":"categoryInput"}},[_c('b-form-select',{attrs:{"id":"categoryInput","options":_vm.foods,"required":""},model:{value:(_vm.form.category),callback:function ($$v) {_vm.$set(_vm.form, "category", $$v)},expression:"form.category"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"errorDescriptionGroup","label":"Mô tả lỗi","label-for":"errorDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"errorDescriptionInput","type":"text","required":"","placeholder":"Enter Error Description"},model:{value:(_vm.form.error_desc),callback:function ($$v) {_vm.$set(_vm.form, "error_desc", $$v)},expression:"form.error_desc"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"deviceDescriptionGroup","label":"Mô tả máy","label-for":"deviceDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"deviceDescriptionInput","type":"text","required":"","placeholder":"Enter Device Description"},model:{value:(_vm.form.device_desc),callback:function ($$v) {_vm.$set(_vm.form, "device_desc", $$v)},expression:"form.device_desc"}})],1),_vm._v(" "),_c('b-button',{attrs:{"type":"submit","variant":"primary"}},[_vm._v("Thêm")]),_vm._v(" "),_c('b-button',{attrs:{"type":"reset","variant":"danger"}},[_vm._v("Reset")])],1):_vm._e()],1),_vm._v(" "),_c('div',{staticClass:"col-md-8"},[(_vm.customer != null)?_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "+_vm._s(_vm.customer.name)+" \r\n            "),_c('span',[_vm._v("\r\n                /                    \r\n                "+_vm._s(_vm.customer.phone)+"\r\n            ")])]):_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "),_c('span',{staticStyle:{"color":"red"}},[_vm._v("Empty")])]),_vm._v(" "),_c('b-table',{attrs:{"striped":"","hover":"","items":_vm.items,"fields":_vm.fields},scopedSlots:_vm._u([{key:"action",fn:function(row){return [_c('i',{staticClass:"fas fa-trash-alt delete-btn",on:{"click":function($event){_vm.removeItem(row.item,row.index)}}})]}}])})],1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -22863,7 +22868,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__ = __webpack_require__(39);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b0819c12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_56e1c134_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(95);
 function injectStyle (ssrContext) {
   __webpack_require__(90)
 }
@@ -22883,7 +22888,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_b0819c12_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_56e1c134_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -22904,7 +22909,7 @@ var content = __webpack_require__(91);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(16)("619d2385", content, true, {});
+var update = __webpack_require__(16)("5ee14a6f", content, true, {});
 
 /***/ }),
 /* 91 */
@@ -22975,7 +22980,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form col-md-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-title",attrs:{"for":"customer-filter"}},[_vm._v("Tìm khách hàng")]),_vm._v(" "),_c('v-autocomplete',{attrs:{"id":"customer-filter","input-class":'form-control mb-2 mr-sm-2',"items":_vm.items,"get-label":_vm.getLabel,"auto-select-one-item":false,"placeholder":'Gõ ít nhất 3 kí tự để tìm',"component-item":_vm.template},on:{"update-items":_vm.updateItems,"item-clicked":_vm.chooseItem,"item-selected":_vm.chooseItem},model:{value:(_vm.item),callback:function ($$v) {_vm.item=$$v},expression:"item"}})],1)]),_vm._v(" "),_vm._m(0)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form col-md-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-title",attrs:{"for":"customer-filter"}},[_vm._v("Tìm khách hàng")]),_vm._v(" "),_c('v-autocomplete',{attrs:{"id":"customer-filter","input-class":'form-control mb-2 mr-sm-2',"items":_vm.items,"get-label":_vm.getLabel,"auto-select-one-item":false,"placeholder":'Gõ ít nhất 3 kí tự để tìm',"component-item":_vm.template},on:{"update-items":_vm.updateItems,"item-selected":_vm.chooseItem},model:{value:(_vm.item),callback:function ($$v) {_vm.item=$$v},expression:"item"}})],1)]),_vm._v(" "),_vm._m(0)])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"col-md-8"},[_c('label',{staticClass:"form-title"},[_vm._v("Thêm khách hàng            \r\n        ")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"type":"text","id":"new-customer-name","placeholder":"Tên khách hàng"}}),_vm._v(" "),_c('input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"type":"phone","id":"new-customer-phone","placeholder":"Điện thoại"}}),_vm._v(" "),_c('button',{staticClass:"btn btn-sm btn-primary mb-2",attrs:{"type":"submit"}},[_vm._v("Thêm")])])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -22985,7 +22990,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk,"shown":_vm.clearName}},[_c('template',{slot:"modal-title"},[_c('customer-form')],1),_vm._v(" "),_c('device-form',{on:{"exit":_vm.handleSubmit}})],2)],1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk,"shown":_vm.clearName}},[_c('template',{slot:"modal-title"},[_c('customer-form',{on:{"updateCustomerInfo":_vm.chooseCustomer}})],1),_vm._v(" "),_c('device-form',{attrs:{"customer":_vm.customer},on:{"exit":_vm.handleSubmit}})],2)],1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

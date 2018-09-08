@@ -15,9 +15,11 @@
           @ok="handleOk" 
           @shown="clearName">    
           <template slot="modal-title">
-            <customer-form></customer-form>            
+            <customer-form v-on:updateCustomerInfo="chooseCustomer">
+            </customer-form>            
           </template>                   
-          <device-form @exit="handleSubmit"></device-form>
+          <device-form @exit="handleSubmit" v-bind:customer="customer">
+          </device-form>
         </b-modal>
     </div>
 </div>
@@ -40,7 +42,8 @@ export default {
   data: function() {
     return {
       name: "",
-      names: [],    
+      names: [],        
+      customer: null, 
     };
   },
   methods: {
@@ -64,6 +67,7 @@ export default {
     },  
     chooseCustomer(customer){
       console.log(customer);
+      this.customer = customer;
     }
   }
 };
