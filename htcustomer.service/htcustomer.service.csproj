@@ -60,6 +60,7 @@
     <Compile Include="ViewModel\AddressBookViewModel.cs" />
     <Compile Include="ViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\ContactDetailsViewModel.cs" />
+    <Compile Include="ViewModel\CustomerSearchViewModel.cs" />
     <Compile Include="ViewModel\CustomerViewModel.cs" />
     <Compile Include="ViewModel\CustomSerializeModel.cs" />
     <Compile Include="ViewModel\LoginView.cs" />

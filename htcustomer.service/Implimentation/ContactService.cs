@@ -119,5 +119,21 @@ namespace htcustomer.service.Implements
             }
             return true; 
         }
+
+        public IEnumerable<CustomerSearchViewModel> SearchCustomer(string searchValue)
+        {
+            var customerList = customerRepository.Gets().Where(e => (searchValue == null) 
+                                                                    || ((searchValue != null) 
+                                                                        && ((e.Name + " " + e.Description).ToUpper().Contains(searchValue.ToUpper()) 
+                                                                            || searchValue.Contains(e.Phone))))
+                                                        .Where(e => !e.Disable.HasValue || !e.Disable.Value)
+                                                        .Select(x => new CustomerSearchViewModel
+                                                        {
+                                                            CustomerId = x.CustomerID,
+                                                            CustomerName = x.Name + ' ' + x.Description,
+                                                            Phone = x.Phone
+                                                        });
+            return customerList;
+        }
     }
 }

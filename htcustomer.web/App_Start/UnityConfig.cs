@@ -1,7 +1,9 @@
 using htcustomer.entity;
 using htcustomer.repository;
+using htcustomer.service.Implements;
 using htcustomer.service.Implimentation;
 using htcustomer.service.Interface;
+using htcustomer.service.Interfaces;
 using System;
 using System.Data.Entity;
 using Unity;
@@ -34,6 +36,9 @@ namespace htcustomer.web
 
             // Services
             container.RegisterType<IAuthService, AuthService>();            
+            container.RegisterType<IContactService, ContactService>();
+            container.RegisterType<ICategoryService, CategoryService>();
+            container.RegisterType<ITransactionService, TransactionService>();
         }
     }
 }

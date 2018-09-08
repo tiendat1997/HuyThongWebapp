@@ -17,6 +17,7 @@ namespace htcustomer.service.Interfaces
         bool Existed(CustomerViewModel customer);
         void DisableCustomer(int customerID);
         bool UpdateCustomer(CustomerViewModel customer);
+        IEnumerable<CustomerSearchViewModel> SearchCustomer(string searchValue);
     }
     
 

@@ -93,9 +93,15 @@ namespace htcustomer.web.Controllers
             }
             catch(Exception ex)
             {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                 return Json(new JsonMessage { Status = JsonResultStatus.Fail, Message = "Error during editing customer" }, JsonRequestBehavior.AllowGet);
             }
             return Json(new JsonMessage { Status = JsonResultStatus.Success, Message = "Editing customer successfully" }, JsonRequestBehavior.AllowGet);
         }      
+        public ActionResult SearchCustomer(string searchValue)
+        {
+            var customerList = contactService.SearchCustomer(searchValue);
+            return Json(customerList, JsonRequestBehavior.AllowGet);
+        }
     }
 }
