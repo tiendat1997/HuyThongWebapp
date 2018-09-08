@@ -13,7 +13,10 @@
           title="Nhận đồ sửa" 
           size="lg"
           @ok="handleOk" 
-          @shown="clearName">                       
+          @shown="clearName">    
+          <template slot="modal-title">
+            <customer-form></customer-form>            
+          </template>                   
           <device-form @exit="handleSubmit"></device-form>
         </b-modal>
     </div>
@@ -23,12 +26,14 @@
 <script>
 import Datepicker from "vuejs-datepicker";
 import DeviceForm from "./DeviceForm"
+import CustomerForm from "./CustomerForm"
 
 export default {
   name: "SearchBar",
   components: {
     DeviceForm,
     Datepicker,  
+    CustomerForm
   },
   directives: {  
   },
@@ -57,6 +62,9 @@ export default {
       this.clearName();
       this.$refs.modal.hide();
     },  
+    chooseCustomer(customer){
+      console.log(customer);
+    }
   }
 };
 </script>

@@ -19,77 +19,97 @@
         </b-form>
     </div>
     <div class="col-md-8">
-        <b-table responsive striped hover :items="items" :fields="fields">
-             <template slot="action" slot-scope="data">
-                <i class="fas fa-trash-alt"></i>
-            </template>
+        <label>
+            <b>Khách hàng:</b> {{customerInfo.name}} 
+            <span>
+                /                    
+                {{customerInfo.phone}}
+            </span>
+        </label>        
+        <b-table striped hover :items="items" :fields="fields">            
+            <template slot="action" slot-scope="row">
+              <i v-on:click="removeItem(row.item,row.index)" class="fas fa-trash-alt delete-btn"></i>
+            </template>           
         </b-table>
     </div>
 </div>
 </template>
 
+<style>
+.delete-btn:hover {
+    color: red;
+}
+</style>
+
 <script>
-const fields = [
-  {
-    key: "action",
-    label: "Xóa"
-  },
-  {
-    key: "category",
-    label: "Loại"
-  },
-  {
-    key: "error_desc",
-    label: "Lỗi"
-  },
-  {
-    key: "device_desc",
-    label: "Mô tả"
-  }
-];
-export default {
-  name: "DeviceForm",
-  components: {},
-  data() {
-    return {
-      items: [],
-      fields: fields,
-      form: {
-        category: null,
-        error_desc: null,
-        device_desc: null,
-      },
-      foods: [
-        {
-          text: "Select One",
-          value: null
-        },
-        "Carrots",
-        "Beans",
-        "Tomatoes",
-        "Corn"
-      ],
-      show: true
-    };
-  },
-  methods: {
-    onSubmit(evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
-      this.items.push(this.form);
+const fields = [{
+        key: "action",
+        label: "Xóa"
     },
-    onReset(evt) {
-      evt.preventDefault();
-      /* Reset our form values */
-      this.form.category = null;
-      this.form.error_desc = null;
-      this.form.device_desc = null;      
-      /* Trick to reset/clear native browser form validation state */
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
+    {
+        key: "category",
+        label: "Loại",      
+    },
+    {
+        key: "error_desc",
+        label: "Lỗi"
+    },
+    {
+        key: "device_desc",
+        label: "Mô tả"
+    },   
+];
+const customer = {
+    name: "Trần Tiến Đạt",
+    phone: "01643734810"
+}
+export default {
+    name: "DeviceForm",
+    components: {},
+    data() {
+        return {
+            customerInfo: customer,
+            items: [],
+            fields: fields,
+            form: {
+                category: null,
+                error_desc: null,
+                device_desc: null,
+            },
+            foods: [{
+                    text: "Select One",
+                    value: null
+                },
+                "Carrots",
+                "Beans",
+                "Tomatoes",
+                "Corn"
+            ],
+            show: true
+        };
+    },
+    methods: {
+        onSubmit(evt) {
+            evt.preventDefault();
+            // alert(JSON.stringify(this.form));            
+            this.items.push(this.form);                      
+            this.form = {};
+        },
+        onReset(evt) {
+            evt.preventDefault();
+            /* Reset our form values */
+            this.form.category = null;
+            this.form.error_desc = null;
+            this.form.device_desc = null;
+            // /* Trick to reset/clear native browser form validation state */
+            // this.show = false;
+            // this.$nextTick(() => {
+            //   this.show = true;
+            // });
+        },
+        removeItem(item,index) {
+          this.items.splice(index,1);
+        }
     }
-  }
 };
 </script>
