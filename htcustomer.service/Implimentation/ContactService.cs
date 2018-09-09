@@ -122,15 +122,12 @@ namespace htcustomer.service.Implements
 
         public IEnumerable<CustomerSearchViewModel> SearchCustomer(string searchValue)
         {
-            var customerList = customerRepository.Gets().Where(e => (searchValue == null) 
-                                                                    || ((searchValue != null) 
-                                                                        && ((e.Name + " " + e.Description).ToUpper().Contains(searchValue.ToUpper()) 
-                                                                            || searchValue.Contains(e.Phone))))
-                                                        .Where(e => !e.Disable.HasValue || !e.Disable.Value)
+            var customerList = customerRepository.Gets().Where(x => !x.Disable.HasValue || !x.Disable.Value)
+                                                        .Where(x => (x.Name.ToLower() + ' ' + (x.Description != null? x.Description.ToLower() : "") + ' ' + x.Phone).Contains(searchValue.ToLower()))
                                                         .Select(x => new CustomerSearchViewModel
                                                         {
                                                             CustomerId = x.CustomerID,
-                                                            CustomerName = x.Name + ' ' + x.Description,
+                                                            CustomerName = x.Name + (x.Description != null ? ' ' + x.Description : ""),
                                                             Phone = x.Phone
                                                         });
             return customerList;
