@@ -25,6 +25,12 @@ namespace htcustomer.web.Controllers
             return View("Index", transactions);
         }
 
+        public ActionResult GetListTransactionHome()
+        {
+            var transactionList = transactionService.GetListTransactionHome();
+            return Json(transactionList, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult FilterTransaction(int statusId = (int)TransactionStatus.NotFix, int? month = null, int? year = null, int? categoryId = null) {
 
             var viewModel = transactionService.GetListTransaction((TransactionStatus)statusId, month, year, categoryId);
