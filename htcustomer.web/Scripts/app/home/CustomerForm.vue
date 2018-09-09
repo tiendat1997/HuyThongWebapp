@@ -78,6 +78,7 @@ export default {
   },
   methods: {
     getLabel(item) {
+      if (item === null) return;
       return item.CustomerName;
     },
     updateItems(text) {     

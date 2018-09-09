@@ -68,7 +68,7 @@ module.exports = {
     devServer: {
         proxy: {
             '*': {
-                target: 'http://localhost:54502',
+                target: 'http://localhost:54400',
                 changeOrigin: true
             }
         }
