@@ -60,13 +60,11 @@ export default {
       }
     },
     handleSubmit() {
-      this.names.push(this.name);
-      console.log("Handle Submit");      
+      this.names.push(this.name);      
       this.clearName();
       this.$refs.modal.hide();
     },  
-    chooseCustomer(customer){
-      console.log(customer);
+    chooseCustomer(customer){      
       this.customer = customer;
     }
   }

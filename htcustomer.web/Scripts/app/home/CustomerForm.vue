@@ -54,7 +54,7 @@ const customers = [
     name: "Nguyễn Ngọc Thúy",
     phone: "01218351464"
   },
-   {
+  {
     id: 6,
     name: "Ngọc Thúy Nguyễn",
     phone: "01218351464"
@@ -78,18 +78,23 @@ export default {
   },
   methods: {
     getLabel(item) {
-      return item.name;
+      return item.CustomerName;
     },
-    updateItems(text) {
-      this.items = customers.filter(customer => {
-        return customer.name.toLowerCase().includes(text.toLowerCase());
-      });
-      //   yourGetItemsMethod(text).then(response => {
-      //     this.items = response;
-      //   });
+    updateItems(text) {     
+      let api = `/contact/searchcustomer`;
+      var self = this;
+      this.axios
+        .get(api, {
+          params: {
+            searchvalue: text
+          }
+        })
+        .then(response => {          
+          this.items = response.data;          
+        });
     },
-    chooseItem(item){          
-        this.$emit("updateCustomerInfo", item);
+    chooseItem(item) {
+      this.$emit("updateCustomerInfo", item);
     }
   }
 };

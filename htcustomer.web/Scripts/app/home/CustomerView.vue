@@ -1,10 +1,9 @@
 <template>
 <div class="col-md-12">
-    <p>{{ item.name }}</p>
+    <p>{{ item.CustomerName }}</p>
 </div>
 </template>
 
- 
 <script>
 export default {
     name: "CustomerView",
