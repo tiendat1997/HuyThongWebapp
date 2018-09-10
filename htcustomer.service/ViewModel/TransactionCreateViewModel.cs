@@ -8,9 +8,7 @@ namespace htcustomer.service.ViewModel.Transaction
 {
     public class TransactionCreateViewModel
     {
-        public int CustomerID { get; set; }
-        public int CategoryID { get; set; }
-        public string Description { get; set; }
-        public string Error { get; set; }
+        public int CustomerId { get; set; }
+        public IEnumerable<TransactionItemCreateViewModel> Transactions { get; set; }
     }
 }

@@ -339,5 +339,28 @@ namespace htcustomer.service.Implements
             };
             return result;
         }
+
+        public bool Add(TransactionCreateViewModel model)
+        {
+            if(model.Transactions != null && model.Transactions.Count() > 0)
+            {
+                foreach(var transaction in model.Transactions)
+                {
+                    transactionRepository.Insert(new Transaction() {
+                        CustomerID = model.CustomerId,
+                        Error = transaction.Error,
+                        Description = transaction.DeviceDescription,
+                        TypeID = transaction.CategoryId,
+                        RecievedDate = DateTime.Now,
+                        StatusID = (int)entity.Enums.TransactionStatus.NotFix,
+                    });
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
