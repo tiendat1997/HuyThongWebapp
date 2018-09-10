@@ -4,7 +4,6 @@
     <device-view/>
   </div> 
 </template>
-
 <script>
 
 import SearchBar from './SearchBar'

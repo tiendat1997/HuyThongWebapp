@@ -13,12 +13,10 @@ namespace htcustomer.service.ViewModel
         [Required(ErrorMessage = "Name should not be empty")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Phone should not be empty")]
-        [RegularExpression(@"^[0-9]{9,12}$", ErrorMessage = "Phone number was not in true format")]
+        [RegularExpression(@"^[0-9]{10,}$", ErrorMessage = "Phone number was not in true format")]
         public string Phone { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
         public bool? Disable { get; set; } 
-
-
     }
 }

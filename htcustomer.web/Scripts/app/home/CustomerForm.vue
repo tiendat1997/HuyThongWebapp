@@ -1,29 +1,25 @@
 <template>
 <div class="row">
     <div class="form col-md-4">
-        <div class="form-group">        
+        <div class="form-group">
             <label class="form-title" for="customer-filter">Tìm khách hàng</label>
-            <v-autocomplete 
-                id="customer-filter"
-                :input-class="'form-control mb-2 mr-sm-2'"
-                :items="items" v-model="item" :get-label="getLabel"
-                :auto-select-one-item="false"
-                :placeholder="'Gõ ít nhất 3 kí tự để tìm'" 
-                :component-item='template' 
-                @update-items="updateItems"                
+            <v-autocomplete id="customer-filter" :input-class="'form-control mb-2 mr-sm-2'" :items="items" v-model="item" :get-label="getLabel" :auto-select-one-item="false" :placeholder="'Gõ ít nhất 3 kí tự để tìm'" :component-item='template' @update-items="updateItems"
                 @item-selected="chooseItem">
-            </v-autocomplete>            
-        </div>        
-    </div> 
-    <div class="col-md-8">       
+            </v-autocomplete>
+        </div>
+    </div>
+    <div class="col-md-8">
         <label class="form-title">Thêm khách hàng            
-        </label>                        
-    <form class="form-inline"> 
-        <input type="text" class="form-control mb-2 mr-sm-2" id="new-customer-name" placeholder="Tên khách hàng">                   
-        <input type="phone" class="form-control mb-2 mr-sm-2" id="new-customer-phone" placeholder="Điện thoại">                    
-        <button type="submit" class="btn btn-sm btn-primary mb-2">Thêm</button>    
-    </form>
-    </div>   
+        </label>
+        <b-form inline @submit="onAddCustomer" @reset="onResetCustomerForm">
+            <b-form-input id="new-customer-name" type="text" v-model="newCustomer.name" required class="form-control mb-2 mr-sm-2" placeholder="Tên khách hàng">
+            </b-form-input>
+            <b-form-input id="new-customer-phone" type="tel" v-model="newCustomer.phone" class="form-control mb-2 mr-sm-2" required placeholder="Điện thoại" 
+            pattern="^\d{10,}$" title="Số điện thoại không hợp lệ">
+            </b-form-input>
+            <b-button type="submit" class="btn btn-sm btn-primary mb-2" variant="primary">Thêm</b-button>                        
+        </b-form>
+    </div>
 </div>
 </template>
 
@@ -60,6 +56,12 @@ const customers = [
     phone: "01218351464"
   }
 ];
+
+const JSON_STATUS = {
+  Success: "Success",
+  Unvalidated: "Unvalidated"
+};
+
 import CustomerView from "./CustomerView";
 import Autocomplete from "v-autocomplete";
 
@@ -73,15 +75,38 @@ export default {
     return {
       item: null,
       items: [],
+      newCustomer: {
+        name: "",
+        phone: ""
+      },
       template: CustomerView
     };
   },
   methods: {
+    onAddCustomer(evt) {
+      evt.preventDefault();
+      var api = "/contact/addcustomer";
+      this.axios
+        .post(api, this.newCustomer)
+        .then(function(response) {
+          let status = response.data.Status;
+          if (status === JSON_STATUS.Success) {
+            alert(response.data.Message);
+          } else if (status === JSON_STATUS.Unvalidated) {            
+            alert(response.data.Message);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+          alert(error);
+        });
+    },
+    onResetCustomerForm() {},
     getLabel(item) {
       if (item === null) return;
       return item.CustomerName;
     },
-    updateItems(text) {     
+    updateItems(text) {
       let api = `/contact/searchcustomer`;
       var self = this;
       this.axios
@@ -90,8 +115,8 @@ export default {
             searchvalue: text
           }
         })
-        .then(response => {          
-          this.items = response.data;          
+        .then(response => {
+          this.items = response.data;
         });
     },
     chooseItem(item) {
@@ -105,6 +130,7 @@ export default {
 #addDeviceModal .modal-title {
   width: 100%;
 }
+
 .v-autocomplete {
   position: relative;
 }
