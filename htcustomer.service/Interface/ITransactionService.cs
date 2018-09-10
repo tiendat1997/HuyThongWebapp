@@ -15,6 +15,7 @@ namespace htcustomer.service.Interfaces
         bool CannotFixTransaction(int transactionID, string reason = "");
         TransactionViewModel DeliverTransaction(int transactionID);
         bool Add(TransactionViewModel transaction);
+        bool Add(TransactionCreateViewModel model);
         PriceTransactionViewModel GetTransactionToAddPrice(int transactionId);
         TransactionHomeViewModel GetTransactionToReload(int transactionId);
     }

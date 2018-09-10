@@ -92,7 +92,6 @@ namespace htcustomer.web.Controllers
             return Json(new JsonMessage { Status = JsonResultStatus.Success, Message = "Add reason succesfully"});
         }
       
-
         public ActionResult DeliverTransaction(int transactionId, bool getTransactionRow = false)
         {
             TransactionViewModel result = transactionService.DeliverTransaction(transactionId);
@@ -109,5 +108,19 @@ namespace htcustomer.web.Controllers
             }
             return Json(new JsonMessage() { Status = JsonResultStatus.Fail, Message = "Deliver Fail!" }, JsonRequestBehavior.AllowGet);
         }        
+
+        [HttpPost]
+        public ActionResult AddTransactions(TransactionCreateViewModel model)
+        {
+            try
+            {
+                transactionService.Add(model);
+            }catch(Exception ex)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                return Json(JsonResultStatus.Fail);
+            }
+            return Json(JsonResultStatus.Success);
+        }
     }
 }
