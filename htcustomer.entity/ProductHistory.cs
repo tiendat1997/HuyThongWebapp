@@ -13,9 +13,9 @@ namespace htcustomer.entity
     {
         [Key]
         public int HistoryId { get; set; }
-        public int ProductId { get; set; }
-        public int Amount { get; set; }
-        public DateTime SellDate { get; set; }
+        public int? ProductId { get; set; }
+        public int? Amount { get; set; }
+        public DateTime? SellDate { get; set; }
         public double? SellPrice { get; set; }
         public virtual Product Product { get; set; }
     }
