@@ -7153,8 +7153,6 @@ process.umask = function() { return 0; };
 //
 //
 //
-//
-
 
 
 
@@ -7206,7 +7204,14 @@ process.umask = function() { return 0; };
 //
 //
 //
+//
+//
 
+const JSON_STATUS = {
+  Success: "Success",
+  Unvalidated: "Unvalidated",
+  Fail: "Failure"
+};
 
 
 
@@ -7223,25 +7228,40 @@ process.umask = function() { return 0; };
     return {
       name: "",
       names: [],
+      items: [], // transaction list
       customer: null
     };
   },
   methods: {
-    clearName() {
-      this.name = "";
-    },
+    resetModal() {},
     handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault();
-      if (!this.name) {
-        alert("Please enter your name");
+      console.log(this.customer);
+      console.log(this.items);
+      if (this.customer === null) {
+        alert("Vui lòng chọn thông tin khách hàng !");
+      } else if (this.items.length == 0) {
+        alert("Vui lòng thêm đồ sửa !");
       } else {
         this.handleSubmit();
       }
     },
     handleSubmit() {
-      this.names.push(this.name);
-      this.clearName();
+      var api = "/device/AddTransactions";
+      this.axios.post(api, {
+        CustomerId: this.customer.CustomerId,
+        Transactions: this.items
+      }).then(function (response) {
+        console.log(response);
+        let status = response.data.Status;
+        if (status === JSON_STATUS.Success) {
+          alert(response.data.Message);
+        } else if (status === JSON_STATUS.Fail) {
+          alert(response.data.Message);
+        }
+      });
+
       this.$refs.modal.hide();
     },
     chooseCustomer(customer) {
@@ -7313,10 +7333,10 @@ const fields = [{
     key: "category_name",
     label: "Loại"
 }, {
-    key: "error_desc",
+    key: "Error",
     label: "Lỗi"
 }, {
-    key: "device_desc",
+    key: "DeviceDescription",
     label: "Mô tả"
 }];
 
@@ -7324,18 +7344,18 @@ const fields = [{
     name: "DeviceForm",
     components: {},
     props: {
-        customer: Object
+        customer: Object,
+        items: Array
     },
     data() {
         return {
-            items: [],
             fields: fields,
             categories: [],
             form: {
-                category_id: null,
+                CategoryId: null,
                 category_name: null,
-                error_desc: null,
-                device_desc: null
+                Error: null,
+                DeviceDescription: null
             },
             categoryOptions: [],
             show: true
@@ -7357,10 +7377,10 @@ const fields = [{
         });
     },
     methods: {
-        onSubmit(evt) {
+        onSubmitAddItem(evt) {
             evt.preventDefault();
             this.categoryOptions.forEach(item => {
-                if (item.value === this.form.category_id) {
+                if (item.value === this.form.CategoryId) {
                     this.form.category_name = item.text;
                 }
             });
@@ -7369,17 +7389,12 @@ const fields = [{
             this.items.push(this.form);
             this.form = {};
         },
-        onReset(evt) {
+        onResetAddItem(evt) {
             evt.preventDefault();
             /* Reset our form values */
-            this.form.category_id = null;
-            this.form.error_desc = null;
-            this.form.device_desc = null;
-            // /* Trick to reset/clear native browser form validation state */
-            // this.show = false;
-            // this.$nextTick(() => {
-            //   this.show = true;
-            // });
+            this.form.CategoryId = null;
+            this.form.Error = null;
+            this.form.DeviceDescription = null;
         },
         removeItem(item, index) {
             this.items.splice(index, 1);
@@ -7420,36 +7435,12 @@ const fields = [{
 //
 //
 //
-//
-//
-//
-//
 
-const customers = [{
-  id: 1,
-  name: "Trần Tiến Đạt",
-  phone: "01643734810"
-}, {
-  id: 2,
-  name: "Nguyễn Thúy Ngọc",
-  phone: "01218351464"
-}, {
-  id: 3,
-  name: "Trần Thanh Huy",
-  phone: "0913952190"
-}, {
-  id: 4,
-  name: "Nguyễn Thị Bạch Tuyết",
-  phone: "0994491609"
-}, {
-  id: 5,
-  name: "Nguyễn Ngọc Thúy",
-  phone: "01218351464"
-}, {
-  id: 6,
-  name: "Ngọc Thúy Nguyễn",
-  phone: "01218351464"
-}];
+const JSON_STATUS = {
+  Success: "Success",
+  Unvalidated: "Unvalidated"
+};
+
 
 
 
@@ -7463,11 +7454,34 @@ const customers = [{
     return {
       item: null,
       items: [],
+      newCustomer: {
+        Name: "",
+        Phone: ""
+      },
       template: __WEBPACK_IMPORTED_MODULE_0__CustomerView__["a" /* default */]
     };
   },
   methods: {
+    onAddCustomer(evt) {
+      evt.preventDefault();
+      var api = "/contact/addcustomer";
+      var self = this;
+      this.axios.post(api, this.newCustomer).then(function (response) {
+        let status = response.data.Status;
+        if (status === JSON_STATUS.Success) {
+          alert(response.data.Message);
+          self.$emit("updateCustomerInfo", self.newCustomer);
+        } else if (status === JSON_STATUS.Unvalidated) {
+          alert(response.data.Message);
+        }
+      }).catch(function (error) {
+        console.log(error);
+        alert(error);
+      });
+    },
+    onResetCustomerForm() {},
     getLabel(item) {
+      if (item === null) return;
       return item.CustomerName;
     },
     updateItems(text) {
@@ -21863,7 +21877,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(39);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_331554cd_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_74c6fc93_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(111);
 function injectStyle (ssrContext) {
   __webpack_require__(85)
 }
@@ -21883,7 +21897,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_331554cd_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_74c6fc93_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -21904,7 +21918,7 @@ var content = __webpack_require__(86);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("6b7de2eb", content, true, {});
+var update = __webpack_require__(17)("d0d711e4", content, true, {});
 
 /***/ }),
 /* 86 */
@@ -21960,7 +21974,7 @@ module.exports = function listToStyles (parentId, list) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__ = __webpack_require__(40);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_847d9226_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9b05256a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(103);
 function injectStyle (ssrContext) {
   __webpack_require__(89)
 }
@@ -21980,7 +21994,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_847d9226_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9b05256a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -22001,7 +22015,7 @@ var content = __webpack_require__(90);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("65722766", content, true, {});
+var update = __webpack_require__(17)("473c1dba", content, true, {});
 
 /***/ }),
 /* 90 */
@@ -23508,7 +23522,7 @@ var Datepicker = {render: function(){var _vm=this;var _h=_vm.$createElement;var 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DeviceForm_vue__ = __webpack_require__(41);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ce94f9f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cf17af44_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__ = __webpack_require__(95);
 function injectStyle (ssrContext) {
   __webpack_require__(93)
 }
@@ -23528,7 +23542,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_DeviceForm_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ce94f9f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cf17af44_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_DeviceForm_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -23549,7 +23563,7 @@ var content = __webpack_require__(94);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("63c592b2", content, true, {});
+var update = __webpack_require__(17)("25a13731", content, true, {});
 
 /***/ }),
 /* 94 */
@@ -23570,7 +23584,7 @@ exports.push([module.i, ".delete-btn:hover{color:red}", ""]);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"col-md-4"},[(_vm.show)?_c('b-form',{on:{"submit":_vm.onSubmit,"reset":_vm.onReset}},[_c('b-form-group',{attrs:{"id":"categoryGroup","label":"Loại thiết bị","label-for":"categoryInput"}},[_c('b-form-select',{attrs:{"id":"categoryInput","options":_vm.categoryOptions,"required":""},model:{value:(_vm.form.category_id),callback:function ($$v) {_vm.$set(_vm.form, "category_id", $$v)},expression:"form.category_id"}},[_c('template',{slot:"first"},[_c('option',{attrs:{"disabled":""},domProps:{"value":null}},[_vm._v("-- Chọn loại --")])])],2)],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"errorDescriptionGroup","label":"Mô tả lỗi","label-for":"errorDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"errorDescriptionInput","type":"text","required":"","placeholder":"Enter Error Description"},model:{value:(_vm.form.error_desc),callback:function ($$v) {_vm.$set(_vm.form, "error_desc", $$v)},expression:"form.error_desc"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"deviceDescriptionGroup","label":"Mô tả máy","label-for":"deviceDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"deviceDescriptionInput","type":"text","required":"","placeholder":"Enter Device Description"},model:{value:(_vm.form.device_desc),callback:function ($$v) {_vm.$set(_vm.form, "device_desc", $$v)},expression:"form.device_desc"}})],1),_vm._v(" "),_c('b-button',{attrs:{"type":"submit","variant":"primary"}},[_vm._v("Thêm")]),_vm._v(" "),_c('b-button',{attrs:{"type":"reset","variant":"danger"}},[_vm._v("Reset")])],1):_vm._e()],1),_vm._v(" "),_c('div',{staticClass:"col-md-8"},[(_vm.customer != null)?_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "+_vm._s(_vm.customer.CustomerName)+" \r\n            "),_c('span',[_vm._v("\r\n                /                    \r\n                "+_vm._s(_vm.customer.Phone)+"\r\n            ")])]):_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "),_c('span',{staticStyle:{"color":"red"}},[_vm._v("Empty")])]),_vm._v(" "),_c('b-table',{attrs:{"striped":"","hover":"","items":_vm.items,"fields":_vm.fields},scopedSlots:_vm._u([{key:"action",fn:function(row){return [_c('i',{staticClass:"fas fa-trash-alt delete-btn",on:{"click":function($event){_vm.removeItem(row.item,row.index)}}})]}}])})],1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"col-md-4"},[(_vm.show)?_c('b-form',{on:{"submit":_vm.onSubmitAddItem,"reset":_vm.onResetAddItem}},[_c('b-form-group',{attrs:{"id":"categoryGroup","label":"Loại thiết bị","label-for":"categoryInput"}},[_c('b-form-select',{attrs:{"id":"categoryInput","options":_vm.categoryOptions,"required":""},model:{value:(_vm.form.CategoryId),callback:function ($$v) {_vm.$set(_vm.form, "CategoryId", $$v)},expression:"form.CategoryId"}},[_c('template',{slot:"first"},[_c('option',{attrs:{"disabled":""},domProps:{"value":null}},[_vm._v("-- Chọn loại --")])])],2)],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"errorDescriptionGroup","label":"Mô tả lỗi","label-for":"errorDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"errorDescriptionInput","type":"text","required":"","placeholder":"Enter Error Description"},model:{value:(_vm.form.Error),callback:function ($$v) {_vm.$set(_vm.form, "Error", $$v)},expression:"form.Error"}})],1),_vm._v(" "),_c('b-form-group',{attrs:{"id":"deviceDescriptionGroup","label":"Mô tả máy","label-for":"deviceDescriptionInput"}},[_c('b-form-input',{attrs:{"id":"deviceDescriptionInput","type":"text","required":"","placeholder":"Enter Device Description"},model:{value:(_vm.form.DeviceDescription),callback:function ($$v) {_vm.$set(_vm.form, "DeviceDescription", $$v)},expression:"form.DeviceDescription"}})],1),_vm._v(" "),_c('b-button',{attrs:{"type":"submit","variant":"primary"}},[_vm._v("Thêm")]),_vm._v(" "),_c('b-button',{attrs:{"type":"reset","variant":"danger"}},[_vm._v("Reset")])],1):_vm._e()],1),_vm._v(" "),_c('div',{staticClass:"col-md-8"},[(_vm.customer != null)?_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "+_vm._s(_vm.customer.Name)+" \r\n            "),_c('span',[_vm._v("\r\n                /                    \r\n                "+_vm._s(_vm.customer.Phone)+"\r\n            ")])]):_c('label',[_c('b',[_vm._v("Khách hàng:")]),_vm._v(" "),_c('span',{staticStyle:{"color":"red"}},[_vm._v("Empty")])]),_vm._v(" "),_c('b-table',{attrs:{"striped":"","hover":"","items":_vm.items,"fields":_vm.fields},scopedSlots:_vm._u([{key:"action",fn:function(row){return [_c('i',{staticClass:"fas fa-trash-alt delete-btn",on:{"click":function($event){_vm.removeItem(row.item,row.index)}}})]}}])})],1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -23582,7 +23596,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__ = __webpack_require__(42);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4968818e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5dd41016_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(102);
 function injectStyle (ssrContext) {
   __webpack_require__(97)
 }
@@ -23602,7 +23616,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_4968818e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5dd41016_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -23623,7 +23637,7 @@ var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("9ade4480", content, true, {});
+var update = __webpack_require__(17)("df550994", content, true, {});
 
 /***/ }),
 /* 98 */
@@ -23646,7 +23660,7 @@ exports.push([module.i, "#addDeviceModal .modal-title{width:100%}.v-autocomplete
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerView_vue__ = __webpack_require__(43);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fcafc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerView_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7c200b52_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerView_vue__ = __webpack_require__(100);
 var normalizeComponent = __webpack_require__(14)
 /* script */
 
@@ -23663,7 +23677,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerView_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2fcafc60_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerView_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7c200b52_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerView_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -23678,7 +23692,7 @@ var Component = normalizeComponent(
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"col-md-12"},[_c('p',[_vm._v(_vm._s(_vm.item.CustomerName))])])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"col-md-12"},[_c('p',[_vm._v(_vm._s(_vm.item.Name))])])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
@@ -23694,8 +23708,8 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form col-md-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-title",attrs:{"for":"customer-filter"}},[_vm._v("Tìm khách hàng")]),_vm._v(" "),_c('v-autocomplete',{attrs:{"id":"customer-filter","input-class":'form-control mb-2 mr-sm-2',"items":_vm.items,"get-label":_vm.getLabel,"auto-select-one-item":false,"placeholder":'Gõ ít nhất 3 kí tự để tìm',"component-item":_vm.template},on:{"update-items":_vm.updateItems,"item-selected":_vm.chooseItem},model:{value:(_vm.item),callback:function ($$v) {_vm.item=$$v},expression:"item"}})],1)]),_vm._v(" "),_vm._m(0)])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"col-md-8"},[_c('label',{staticClass:"form-title"},[_vm._v("Thêm khách hàng            \r\n        ")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"type":"text","id":"new-customer-name","placeholder":"Tên khách hàng"}}),_vm._v(" "),_c('input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"type":"phone","id":"new-customer-phone","placeholder":"Điện thoại"}}),_vm._v(" "),_c('button',{staticClass:"btn btn-sm btn-primary mb-2",attrs:{"type":"submit"}},[_vm._v("Thêm")])])])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form col-md-4"},[_c('div',{staticClass:"form-group"},[_c('label',{staticClass:"form-title",attrs:{"for":"customer-filter"}},[_vm._v("Tìm khách hàng")]),_vm._v(" "),_c('v-autocomplete',{attrs:{"id":"customer-filter","input-class":'form-control mb-2 mr-sm-2',"items":_vm.items,"get-label":_vm.getLabel,"auto-select-one-item":false,"placeholder":'Gõ ít nhất 3 kí tự để tìm',"component-item":_vm.template},on:{"update-items":_vm.updateItems,"item-selected":_vm.chooseItem},model:{value:(_vm.item),callback:function ($$v) {_vm.item=$$v},expression:"item"}})],1)]),_vm._v(" "),_c('div',{staticClass:"col-md-8"},[_c('label',{staticClass:"form-title"},[_vm._v("Thêm khách hàng            \r\n        ")]),_vm._v(" "),_c('b-form',{attrs:{"inline":""},on:{"submit":_vm.onAddCustomer,"reset":_vm.onResetCustomerForm}},[_c('b-form-input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"id":"new-customer-name","type":"text","required":"","placeholder":"Tên khách hàng"},model:{value:(_vm.newCustomer.Name),callback:function ($$v) {_vm.$set(_vm.newCustomer, "Name", $$v)},expression:"newCustomer.Name"}}),_vm._v(" "),_c('b-form-input',{staticClass:"form-control mb-2 mr-sm-2",attrs:{"id":"new-customer-phone","type":"tel","required":"","placeholder":"Điện thoại","pattern":"^\\d{10,}$","title":"Số điện thoại không hợp lệ"},model:{value:(_vm.newCustomer.Phone),callback:function ($$v) {_vm.$set(_vm.newCustomer, "Phone", $$v)},expression:"newCustomer.Phone"}}),_vm._v(" "),_c('b-button',{staticClass:"btn btn-sm btn-primary mb-2",attrs:{"type":"submit","variant":"primary"}},[_vm._v("Thêm")])],1)],1)])}
+var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
 
@@ -23704,7 +23718,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk,"shown":_vm.clearName}},[_c('template',{slot:"modal-title"},[_c('customer-form',{on:{"updateCustomerInfo":_vm.chooseCustomer}})],1),_vm._v(" "),_c('device-form',{attrs:{"customer":_vm.customer},on:{"exit":_vm.handleSubmit}})],2)],1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk,"shown":_vm.resetModal}},[_c('template',{slot:"modal-title"},[_c('customer-form',{on:{"updateCustomerInfo":_vm.chooseCustomer}})],1),_vm._v(" "),_c('device-form',{attrs:{"customer":_vm.customer,"items":_vm.items},on:{"exit":_vm.handleSubmit}})],2)],1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
