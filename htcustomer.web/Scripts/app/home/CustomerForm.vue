@@ -43,6 +43,7 @@ export default {
       item: null,
       items: [],
       newCustomer: {
+        CustomerId: -1,
         Name: "",
         Phone: ""
       },
@@ -53,15 +54,16 @@ export default {
     onAddCustomer(evt) {
       evt.preventDefault();
       var api = "/contact/addcustomer";
-      var self = this; 
+      var self = this;
       this.axios
         .post(api, this.newCustomer)
         .then(function(response) {
           let status = response.data.Status;
           if (status === JSON_STATUS.Success) {
-            alert(response.data.Message);                        
+            alert(response.data.Message);
+            self.newCustomer.CustomerId = response.data.ConfirmId;
             self.$emit("updateCustomerInfo", self.newCustomer);
-          } else if (status === JSON_STATUS.Unvalidated) {            
+          } else if (status === JSON_STATUS.Unvalidated) {
             alert(response.data.Message);
           }
         })
@@ -70,7 +72,13 @@ export default {
           alert(error);
         });
     },
-    onResetCustomerForm() {},
+    onResetCustomerForm(evt) {
+      this.newCustomer = {
+        CustomerId: -1,
+        Name: "",
+        Phone: ""
+      };
+    },
     getLabel(item) {
       if (item === null) return;
       return item.CustomerName;

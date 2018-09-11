@@ -12,8 +12,7 @@
           ref="modal" 
           title="Nhận đồ sửa" 
           size="lg"
-          @ok="handleOk" 
-          @shown="resetModal">    
+          @ok="handleOk">     <!-- @shown="resetModal" -->           
           <template slot="modal-title">
             <customer-form @updateCustomerInfo="chooseCustomer"> 
               <!-- @ shorthand : v-on:function -->
@@ -46,15 +45,16 @@ export default {
   },
   directives: {},
   data: function() {
-    return {
-      name: "",
-      names: [],
+    return {      
       items: [], // transaction list
       customer: null
     };
   },
   methods: {
-    resetModal() {},
+    resetModal() {
+        this.items = []; 
+        this.customer = null; 
+    },
     handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault();
@@ -70,22 +70,22 @@ export default {
     },
     handleSubmit() {
       var api = "/device/AddTransactions";
+      var self = this;
       this.axios
         .post(api, {
           CustomerId: this.customer.CustomerId,
           Transactions: this.items
         })
-        .then(function(response) {
-          console.log(response);
+        .then(function(response) {          
           let status = response.data.Status;
-          if (status === JSON_STATUS.Success) {
+          if (status === JSON_STATUS.Success) {            
             alert(response.data.Message);
+            self.$refs.modal.hide();
+            self.resetModal();
           } else if (status === JSON_STATUS.Fail) {
             alert(response.data.Message);
           }
-        });
-     
-      this.$refs.modal.hide();
+        });          
     },
     chooseCustomer(customer) {
       this.customer = customer;

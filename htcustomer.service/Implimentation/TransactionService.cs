@@ -354,6 +354,7 @@ namespace htcustomer.service.Implements
                         StatusID = (int)entity.Enums.TransactionStatus.NotFix,
                     });
                 }
+                unitOfWork.SaveChanges();
                 return true;
             }
             else
