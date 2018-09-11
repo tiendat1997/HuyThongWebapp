@@ -9,6 +9,12 @@ namespace htcustomer.entity
     [Table("Product")]
     public partial class Product
     {
+        public Product()
+        {
+            this.ProductHistories = new HashSet<ProductHistory>();
+        }
+
+        [Key]
         public int ProductID { get; set; }
 
         [StringLength(250)]
@@ -38,5 +44,6 @@ namespace htcustomer.entity
         public bool? Disable { get; set; }
 
         public virtual ProductType ProductType { get; set; }
+        public virtual ICollection<ProductHistory> ProductHistories { get; set; }
     }
 }
