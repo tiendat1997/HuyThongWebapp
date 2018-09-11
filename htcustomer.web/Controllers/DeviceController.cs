@@ -25,9 +25,17 @@ namespace htcustomer.web.Controllers
             return View("Index", transactions);
         }
 
-        public ActionResult GetListTransactionHome()
+        public ActionResult GetListTransactionHome(int? month, int? year)
         {
-            var transactionList = transactionService.GetListTransactionHome();
+            if(month == null)
+            {
+                month = DateTime.Now.Month;
+            }
+            if(year == null)
+            {
+                year = DateTime.Now.Year;
+            }
+            var transactionList = transactionService.GetListTransactionHome(month.Value, year.Value);
             return Json(transactionList, JsonRequestBehavior.AllowGet);
         }
 

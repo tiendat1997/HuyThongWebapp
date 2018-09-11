@@ -9,7 +9,7 @@ namespace htcustomer.service.Interfaces
     public interface ITransactionService
     {        
         ContactDetailsViewModel GetContactDetails(int customerID);
-        TransactionListHomeViewModel GetListTransactionHome();
+        TransactionListHomeViewModel GetListTransactionHome(int month, int year);
         TransactionListViewModel GetListTransaction(TransactionStatus? status = null, int? month = null, int? year = null, int? categoryId = null);
         bool FixedTransaction(int transactionID, IEnumerable<PriceDetailViewModel> priceDetails);
         bool CannotFixTransaction(int transactionID, string reason = "");

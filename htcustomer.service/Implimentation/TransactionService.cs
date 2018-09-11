@@ -250,11 +250,10 @@ namespace htcustomer.service.Implements
         }
         
 
-        public TransactionListHomeViewModel GetListTransactionHome()
+        public TransactionListHomeViewModel GetListTransactionHome(int month, int year)
         {
             var transactions = transactionRepository.Gets()
-                                                    //.Where(t => t.RecievedDate.Value.Month == DateTime.Now.Month && t.RecievedDate.Value.Year == DateTime.Now.Year
-                                                    //              && !t.Delivered.Value)
+                                                    .Where(t => t.RecievedDate.Value.Month == month && t.RecievedDate.Value.Year == year)
                                                     .Where(t => t.Delivered.HasValue ? t.Delivered.Value == false : true)
                                                     .Select(t => new TransactionHomeViewModel()
                                                     {

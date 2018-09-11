@@ -16,6 +16,7 @@ namespace htcustomer.entity
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<DetailPrice> DetailPrices { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductHistory> ProductHistories { get; set; }
         public virtual DbSet<ProductType> ProductTypes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<ToDo> ToDoes { get; set; }
@@ -33,6 +34,11 @@ namespace htcustomer.entity
             modelBuilder.Entity<Customer>()
                 .Property(e => e.Phone)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Product>()               
+                .HasMany(e => e.ProductHistories)
+                .WithOptional(e => e.Product)
+                .HasForeignKey(e => e.ProductId);
 
             modelBuilder.Entity<Product>()
                 .Property(e => e.Phone)
