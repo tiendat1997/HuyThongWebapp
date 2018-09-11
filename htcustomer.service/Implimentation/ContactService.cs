@@ -127,7 +127,7 @@ namespace htcustomer.service.Implements
                                                         .Select(x => new CustomerSearchViewModel
                                                         {
                                                             CustomerId = x.CustomerID,
-                                                            CustomerName = x.Name + (x.Description != null ? ' ' + x.Description : ""),
+                                                            Name = x.Name + (x.Description != null ? ' ' + x.Description : ""),
                                                             Phone = x.Phone
                                                         });
             return customerList;

@@ -1,6 +1,6 @@
 <template>
 <div class="col-md-12">
-    <p>{{ item.CustomerName }}</p>
+    <p>{{ item.Name }}</p>
 </div>
 </template>
 

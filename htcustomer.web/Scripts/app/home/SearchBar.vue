@@ -13,12 +13,14 @@
           title="Nhận đồ sửa" 
           size="lg"
           @ok="handleOk" 
-          @shown="clearName">    
+          @shown="resetModal">    
           <template slot="modal-title">
-            <customer-form v-on:updateCustomerInfo="chooseCustomer">
+            <customer-form @updateCustomerInfo="chooseCustomer"> 
+              <!-- @ shorthand : v-on:function -->
             </customer-form>            
           </template>                   
-          <device-form @exit="handleSubmit" v-bind:customer="customer">
+          <device-form @exit="handleSubmit" :customer="customer" :items="items">
+            <!-- -v-bind:customer = :customer -->
           </device-form>
         </b-modal>
     </div>
@@ -26,50 +28,71 @@
 </template>
 
 <script>
+const JSON_STATUS = {
+  Success: "Success",
+  Unvalidated: "Unvalidated",
+  Fail: "Failure"
+};
 import Datepicker from "vuejs-datepicker";
-import DeviceForm from "./DeviceForm"
-import CustomerForm from "./CustomerForm"
+import DeviceForm from "./DeviceForm";
+import CustomerForm from "./CustomerForm";
 
 export default {
   name: "SearchBar",
   components: {
     DeviceForm,
-    Datepicker,  
+    Datepicker,
     CustomerForm
   },
-  directives: {  
-  },
+  directives: {},
   data: function() {
     return {
       name: "",
-      names: [],        
-      customer: null, 
+      names: [],
+      items: [], // transaction list
+      customer: null
     };
   },
   methods: {
-    clearName() {
-      this.name = "";
-    },
+    resetModal() {},
     handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault();
-      if (!this.name) {
-        alert("Please enter your name");
+      console.log(this.customer);
+      console.log(this.items);
+      if (this.customer === null) {
+        alert("Vui lòng chọn thông tin khách hàng !");
+      } else if (this.items.length == 0) {
+        alert("Vui lòng thêm đồ sửa !");
       } else {
         this.handleSubmit();
       }
     },
     handleSubmit() {
-      this.names.push(this.name);      
-      this.clearName();
+      var api = "/device/AddTransactions";
+      this.axios
+        .post(api, {
+          CustomerId: this.customer.CustomerId,
+          Transactions: this.items
+        })
+        .then(function(response) {
+          console.log(response);
+          let status = response.data.Status;
+          if (status === JSON_STATUS.Success) {
+            alert(response.data.Message);
+          } else if (status === JSON_STATUS.Fail) {
+            alert(response.data.Message);
+          }
+        });
+     
       this.$refs.modal.hide();
-    },  
-    chooseCustomer(customer){      
+    },
+    chooseCustomer(customer) {
       this.customer = customer;
     }
   }
 };
 </script>
 
-<style> 
+<style>
 </style>

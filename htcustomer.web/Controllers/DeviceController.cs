@@ -118,9 +118,9 @@ namespace htcustomer.web.Controllers
             }catch(Exception ex)
             {
                 Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-                return Json(JsonResultStatus.Fail);
+                return Json(new JsonMessage() { Status = JsonResultStatus.Fail, Message = "Adding failure" }, JsonRequestBehavior.AllowGet);
             }
-            return Json(JsonResultStatus.Success);
+            return Json(new JsonMessage() { Status = JsonResultStatus.Success, Message = "Adding successfully" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

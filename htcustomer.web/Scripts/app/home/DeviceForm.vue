@@ -1,9 +1,9 @@
 <template>
 <div class="row">
     <div class="col-md-4">
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+        <b-form @submit="onSubmitAddItem" @reset="onResetAddItem" v-if="show">
             <b-form-group id="categoryGroup" label="Loại thiết bị" label-for="categoryInput">
-                <b-form-select id="categoryInput" :options="categoryOptions" required v-model="form.category_id">
+                <b-form-select id="categoryInput" :options="categoryOptions" required v-model="form.CategoryId">
                     <template slot="first">
                         <!-- this slot appears above the options from 'options' prop -->
                         <option :value="null" disabled>-- Chọn loại --</option>
@@ -11,11 +11,11 @@
                 </b-form-select>
             </b-form-group>
             <b-form-group id="errorDescriptionGroup" label="Mô tả lỗi" label-for="errorDescriptionInput">
-                <b-form-input id="errorDescriptionInput" type="text" v-model="form.error_desc" required placeholder="Enter Error Description">
+                <b-form-input id="errorDescriptionInput" type="text" v-model="form.Error" required placeholder="Enter Error Description">
                 </b-form-input>
             </b-form-group>
             <b-form-group id="deviceDescriptionGroup" label="Mô tả máy" label-for="deviceDescriptionInput">
-                <b-form-input id="deviceDescriptionInput" type="text" v-model="form.device_desc" required placeholder="Enter Device Description">
+                <b-form-input id="deviceDescriptionInput" type="text" v-model="form.DeviceDescription" required placeholder="Enter Device Description">
                 </b-form-input>
             </b-form-group>
             <b-button type="submit" variant="primary">Thêm</b-button>
@@ -24,7 +24,7 @@
     </div>
     <div class="col-md-8">
         <label v-if="customer != null">            
-            <b>Khách hàng:</b> {{ customer.CustomerName }} 
+            <b>Khách hàng:</b> {{ customer.Name }} 
             <span>
                 /                    
                 {{customer.Phone}}
@@ -58,11 +58,11 @@ const fields = [{
         label: "Loại"
     },
     {
-        key: "error_desc",
+        key: "Error",
         label: "Lỗi"
     },
     {
-        key: "device_desc",
+        key: "DeviceDescription",
         label: "Mô tả"
     }
 ];
@@ -71,18 +71,18 @@ export default {
     name: "DeviceForm",
     components: {},
     props: {
-        customer: Object
+        customer: Object, 
+        items: Array
     },
     data() {
-        return {
-            items: [],
+        return {          
             fields: fields,
             categories: [],
             form: {
-                category_id: null,
+                CategoryId: null,
                 category_name: null,
-                error_desc: null,
-                device_desc: null
+                Error: null,
+                DeviceDescription: null
             },
             categoryOptions: [],
             show: true
@@ -104,10 +104,10 @@ export default {
         });
     },
     methods: {
-        onSubmit(evt) {
+        onSubmitAddItem(evt) {
             evt.preventDefault();            
             this.categoryOptions.forEach((item) => {                                 
-              if (item.value === this.form.category_id) {
+              if (item.value === this.form.CategoryId) {
                 this.form.category_name = item.text;                
               }
             });
@@ -116,17 +116,12 @@ export default {
             this.items.push(this.form);
             this.form = {};
         },
-        onReset(evt) {
+        onResetAddItem(evt) {
             evt.preventDefault();
             /* Reset our form values */
-            this.form.category_id = null;
-            this.form.error_desc = null;
-            this.form.device_desc = null;
-            // /* Trick to reset/clear native browser form validation state */
-            // this.show = false;
-            // this.$nextTick(() => {
-            //   this.show = true;
-            // });
+            this.form.CategoryId = null;
+            this.form.Error = null;
+            this.form.DeviceDescription = null;      
         },
         removeItem(item, index) {
             this.items.splice(index, 1);

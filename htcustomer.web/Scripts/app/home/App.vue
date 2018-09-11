@@ -5,7 +5,6 @@
   </div> 
 </template>
 <script>
-
 import SearchBar from './SearchBar'
 import DeviceView from './DeviceView'
 

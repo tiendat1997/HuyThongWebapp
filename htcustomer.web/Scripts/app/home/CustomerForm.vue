@@ -12,9 +12,9 @@
         <label class="form-title">Thêm khách hàng            
         </label>
         <b-form inline @submit="onAddCustomer" @reset="onResetCustomerForm">
-            <b-form-input id="new-customer-name" type="text" v-model="newCustomer.name" required class="form-control mb-2 mr-sm-2" placeholder="Tên khách hàng">
+            <b-form-input id="new-customer-name" type="text" v-model="newCustomer.Name" required class="form-control mb-2 mr-sm-2" placeholder="Tên khách hàng">
             </b-form-input>
-            <b-form-input id="new-customer-phone" type="tel" v-model="newCustomer.phone" class="form-control mb-2 mr-sm-2" required placeholder="Điện thoại" 
+            <b-form-input id="new-customer-phone" type="tel" v-model="newCustomer.Phone" class="form-control mb-2 mr-sm-2" required placeholder="Điện thoại" 
             pattern="^\d{10,}$" title="Số điện thoại không hợp lệ">
             </b-form-input>
             <b-button type="submit" class="btn btn-sm btn-primary mb-2" variant="primary">Thêm</b-button>                        
@@ -24,39 +24,6 @@
 </template>
 
 <script>
-const customers = [
-  {
-    id: 1,
-    name: "Trần Tiến Đạt",
-    phone: "01643734810"
-  },
-  {
-    id: 2,
-    name: "Nguyễn Thúy Ngọc",
-    phone: "01218351464"
-  },
-  {
-    id: 3,
-    name: "Trần Thanh Huy",
-    phone: "0913952190"
-  },
-  {
-    id: 4,
-    name: "Nguyễn Thị Bạch Tuyết",
-    phone: "0994491609"
-  },
-  {
-    id: 5,
-    name: "Nguyễn Ngọc Thúy",
-    phone: "01218351464"
-  },
-  {
-    id: 6,
-    name: "Ngọc Thúy Nguyễn",
-    phone: "01218351464"
-  }
-];
-
 const JSON_STATUS = {
   Success: "Success",
   Unvalidated: "Unvalidated"
@@ -76,8 +43,8 @@ export default {
       item: null,
       items: [],
       newCustomer: {
-        name: "",
-        phone: ""
+        Name: "",
+        Phone: ""
       },
       template: CustomerView
     };
@@ -86,12 +53,14 @@ export default {
     onAddCustomer(evt) {
       evt.preventDefault();
       var api = "/contact/addcustomer";
+      var self = this; 
       this.axios
         .post(api, this.newCustomer)
         .then(function(response) {
           let status = response.data.Status;
           if (status === JSON_STATUS.Success) {
-            alert(response.data.Message);
+            alert(response.data.Message);                        
+            self.$emit("updateCustomerInfo", self.newCustomer);
           } else if (status === JSON_STATUS.Unvalidated) {            
             alert(response.data.Message);
           }
