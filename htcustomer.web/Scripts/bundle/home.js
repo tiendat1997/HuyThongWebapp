@@ -7205,7 +7205,6 @@ process.umask = function() { return 0; };
 //
 //
 //
-//
 
 const JSON_STATUS = {
   Success: "Success",
@@ -7226,14 +7225,15 @@ const JSON_STATUS = {
   directives: {},
   data: function () {
     return {
-      name: "",
-      names: [],
       items: [], // transaction list
       customer: null
     };
   },
   methods: {
-    resetModal() {},
+    resetModal() {
+      this.items = [];
+      this.customer = null;
+    },
     handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault();
@@ -7249,20 +7249,20 @@ const JSON_STATUS = {
     },
     handleSubmit() {
       var api = "/device/AddTransactions";
+      var self = this;
       this.axios.post(api, {
         CustomerId: this.customer.CustomerId,
         Transactions: this.items
       }).then(function (response) {
-        console.log(response);
         let status = response.data.Status;
         if (status === JSON_STATUS.Success) {
           alert(response.data.Message);
+          self.$refs.modal.hide();
+          self.resetModal();
         } else if (status === JSON_STATUS.Fail) {
           alert(response.data.Message);
         }
       });
-
-      this.$refs.modal.hide();
     },
     chooseCustomer(customer) {
       this.customer = customer;
@@ -7455,6 +7455,7 @@ const JSON_STATUS = {
       item: null,
       items: [],
       newCustomer: {
+        CustomerId: -1,
         Name: "",
         Phone: ""
       },
@@ -7470,6 +7471,7 @@ const JSON_STATUS = {
         let status = response.data.Status;
         if (status === JSON_STATUS.Success) {
           alert(response.data.Message);
+          self.newCustomer.CustomerId = response.data.ConfirmId;
           self.$emit("updateCustomerInfo", self.newCustomer);
         } else if (status === JSON_STATUS.Unvalidated) {
           alert(response.data.Message);
@@ -7479,7 +7481,13 @@ const JSON_STATUS = {
         alert(error);
       });
     },
-    onResetCustomerForm() {},
+    onResetCustomerForm(evt) {
+      this.newCustomer = {
+        CustomerId: -1,
+        Name: "",
+        Phone: ""
+      };
+    },
     getLabel(item) {
       if (item === null) return;
       return item.CustomerName;
@@ -21974,7 +21982,7 @@ module.exports = function listToStyles (parentId, list) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__ = __webpack_require__(40);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9b05256a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_89f6f5da_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__ = __webpack_require__(103);
 function injectStyle (ssrContext) {
   __webpack_require__(89)
 }
@@ -21994,7 +22002,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_SearchBar_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_9b05256a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_89f6f5da_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_SearchBar_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -22015,7 +22023,7 @@ var content = __webpack_require__(90);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("473c1dba", content, true, {});
+var update = __webpack_require__(17)("3409b3c4", content, true, {});
 
 /***/ }),
 /* 90 */
@@ -23596,7 +23604,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__ = __webpack_require__(42);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5dd41016_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1e1a5c2e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__ = __webpack_require__(102);
 function injectStyle (ssrContext) {
   __webpack_require__(97)
 }
@@ -23616,7 +23624,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_CustomerForm_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_5dd41016_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1e1a5c2e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_CustomerForm_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -23637,7 +23645,7 @@ var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(17)("df550994", content, true, {});
+var update = __webpack_require__(17)("da850a90", content, true, {});
 
 /***/ }),
 /* 98 */
@@ -23718,7 +23726,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk,"shown":_vm.resetModal}},[_c('template',{slot:"modal-title"},[_c('customer-form',{on:{"updateCustomerInfo":_vm.chooseCustomer}})],1),_vm._v(" "),_c('device-form',{attrs:{"customer":_vm.customer,"items":_vm.items},on:{"exit":_vm.handleSubmit}})],2)],1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"form-group"},[_c('datepicker',{attrs:{"bootstrap-styling":true,"placeholder":'Choose a time'}})],1),_vm._v(" "),_c('div',{staticClass:"form-group mx-2"},[_c('b-btn',{directives:[{name:"b-modal",rawName:"v-b-modal.addDeviceModal",modifiers:{"addDeviceModal":true}}],attrs:{"variant":"primary"}},[_vm._v("Nhận đồ sửa")]),_vm._v(" "),_c('b-modal',{ref:"modal",attrs:{"id":"addDeviceModal","title":"Nhận đồ sửa","size":"lg"},on:{"ok":_vm.handleOk}},[_c('template',{slot:"modal-title"},[_c('customer-form',{on:{"updateCustomerInfo":_vm.chooseCustomer}})],1),_vm._v(" "),_c('device-form',{attrs:{"customer":_vm.customer,"items":_vm.items},on:{"exit":_vm.handleSubmit}})],2)],1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
